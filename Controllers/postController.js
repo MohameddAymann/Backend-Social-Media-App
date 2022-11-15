@@ -1,14 +1,17 @@
 import Post from '../Models/postModel.js';
 import Comment from '../Models/commentModel.js';
 
+
 const postControllerl = {
 
     createPost: async (req, res) => {
         try {
-            const { content, images } = req.body;
-
+            const { content } = req.body;
+           
             const newPost = new Post({
-                content, images, userId: req.user._id
+                content,
+                images: req.file ? req.file.filename : null,
+                userId: req.user._id
             })
             await newPost.save()
 
@@ -29,9 +32,14 @@ const postControllerl = {
 
             const {page= 1} = req.query;
 
+            const allPosts =  await Post.find({ userId: [...req.user.following, req.user._id] })
+
             const posts =  await Post.find({ userId: [...req.user.following, req.user._id] })
                 .limit(15)
                 .skip((page - 1) * 15)
+                .sort({
+                    createdAt: -1 //Sort by Date Added DESC
+                })
                 .populate("userId likes", "avatar username firstName lastName").select('-password')
                 .populate({
                     path: "comments",
@@ -44,6 +52,7 @@ const postControllerl = {
             res.status(200).json({
                 message: 'Success.',
                 result: posts.length,
+                total: allPosts.length,
                 posts
             })
 
@@ -54,10 +63,10 @@ const postControllerl = {
 
     updatePost: async (req, res) => {
         try {
-            const { content, images } = req.body
+            const { content } = req.body
 
             const post = await Post.findOneAndUpdate({_id: req.params.id, userId: req.user._id}, {
-                content, images
+                content, images: req.file.originalname || null
             }).populate("userId likes", "avatar username firstName lastName")
             .populate({
                 path: "comments",

@@ -5,27 +5,25 @@ const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true,
-        maxlength: 25
     },
     username: {
         type: String,
         required: true,
-        maxlength: 25,
         unique: true
     },
     lastName: {
         type: String,
         required: true,
-        maxlength: 25
     },
     email: {
         type: String,
-        required: true,
-        unique: true
+        default: '',
+        unique: false,
+        required: false,
     },
     password: {
         type: String,
-        required: true
+        required: true,
     },
     avatar:{
         type: String,
@@ -37,20 +35,19 @@ const userSchema = new mongoose.Schema({
     },
     gender: {
         type: String,
-         default: 'male'
+         default: '',
     },
     phoneNumber: {
         type: String,
-         required: true,
-          unique: true
+        default: '',
     },
-    address: {type: String,
-         default: ''
+    address: {
+        type: String,
+        default: '',
     },
     bio: {
         type: String, 
         default: '',
-        maxlength: 200
     },
     followers: [{type: mongoose.Types.ObjectId, ref: 'User'}],
     following: [{type: mongoose.Types.ObjectId, ref: 'User'}],

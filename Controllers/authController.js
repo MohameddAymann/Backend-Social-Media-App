@@ -6,23 +6,11 @@ const authController = {
     // SIGN UP
     signup: async (req,res) => {
         try {
-            const { firstName, username, lastName, email, password, gender, phoneNumber } = req.body;
+            const { firstName, username, lastName, password, email, phoneNumber, gender } = req.body;
 
             //Check if username already exist or not
             const checkUsername = await User.findOne({username});
             if(checkUsername) return res.status(400).json({message: "This username already exists."});
-
-            //Check if phone number already exist or not
-            const checkPhoneNumber = await User.findOne({phoneNumber});
-            if(checkPhoneNumber) return res.status(400).json({message: "This phone number already exists."});
-
-            //Check if phone number already exist or not
-            const checkEmail = await User.findOne({email});
-            if(checkEmail) return res.status(400).json({message: "This email already exists."});
-
-            //Check if password length more that 6 or not
-            if(password.length < 6)
-            return res.status(400).json({message: "Password must be at least 6 characters."});
 
             //Generate hash password
             const hashPassword = await bcrypt.hash(password, 12);
@@ -30,11 +18,11 @@ const authController = {
             const newUser = new User({
                 firstName,
                 lastName,
-                email,
                 password: hashPassword, 
-                gender,
+                username,
+                email,
                 phoneNumber,
-                username
+                gender
             });
 
             await newUser.save();
@@ -47,7 +35,6 @@ const authController = {
                     password: ''
                 }
             });
-
 
         } catch (error) {
             return res.status(500).json({message: error.message});
@@ -94,7 +81,7 @@ const authController = {
 
 const generateAccessToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-      expiresIn: '30d',
+      expiresIn: '7d',
     })
 }
 

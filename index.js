@@ -6,9 +6,11 @@ import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoSanitize from 'express-mongo-sanitize';
+import path from 'path';
 import authRoutes from './Routes/auth.js';
 import userRoutes from './Routes/users.js';
 import postRoutes from './Routes/posts.js';
+import commentRoutes from './Routes/comments.js';
 
 
 dotenv.config();
@@ -35,6 +37,10 @@ app.use(morgan('common'));
 app.use('/auth' , authRoutes);
 app.use('/user' , userRoutes);
 app.use('/post' , postRoutes);
+app.use('/post' , commentRoutes);
+
+app.use(express.static('public'));
+
 
 
 
