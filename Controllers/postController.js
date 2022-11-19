@@ -38,7 +38,7 @@ const postControllerl = {
                 .limit(15)
                 .skip((page - 1) * 15)
                 .sort({
-                    createdAt: -1 //Sort by Date Added DESC
+                    createdAt: -1 
                 })
                 .populate("userId likes", "avatar username firstName lastName").select('-password')
                 .populate({
